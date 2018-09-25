@@ -1,0 +1,82 @@
+server:
+  port: 8013
+spring:
+  application:
+    name: conhub-concert-batch
+  cloud:
+    config:
+      enabled: false
+  data:
+    mongodb:
+      database: concert
+eureka:
+  client:
+    enabled: true
+    register-with-eureka: true
+    registryFetchIntervalSeconds: 5
+    should-enforce-registration-at-init: true
+    service-url:
+      defaultZone: http://${EUREKA_SERVER_HOST:localhost}:8761/eureka
+  instance:
+    leaseRenewalIntervalInSeconds: 10
+jsoup:
+  mapping-properties-list:
+  -
+    name: Ucho
+    url:
+    - http://ucho.com.pl/program
+    artist-selector: span
+    container-selector: header > h2.entry-title
+    date-selector:
+    - time.published[datetime]
+    date-pattern: yyyy-MM-dd'T'HH:mm:ssXXX
+  -
+    name: B90
+    url:
+    - http://www.b90.pl/koncerty/
+    artist-selector: strong > a
+    container-selector: 'div#srodek > p:not(:last-child):not(:nth-last-child(2))'
+    date-selector:
+    - p
+    date-pattern:
+  -
+    name: Blues Club
+    url:
+    - https://www.bluesclub.pl/pl/koncerty.html
+    artist-selector: p.header
+    date-selector:
+    - p.subheader
+    container-selector: div.header_wrapper
+    date-pattern: yyyy-MM-dd' 'HH:mm
+  -
+    name: Stary Maneż
+    url:
+    - https://starymanez.pl/kalendarz
+    artist-selector: h4.box-news__title > a
+    container-selector: div.box-news__content
+    date-selector:
+    - 'span.box-news__date'
+    date-pattern: dd.MM.yyyy
+  -
+    name: Protokultura
+    url:
+    - http://www.protokultura.pl/Nadchodzace-imprezy?page=1
+    - http://www.protokultura.pl/Nadchodzace-imprezy?page=2
+    artist-selector:  a:first-of-type
+    container-selector: div.eventbox
+    date-selector:
+    - div.event-date #data
+    - div.event-date2 #godzina
+    date-pattern:
+  -
+    name: Stodoła
+    url:
+      - https://www.stodola.pl/koncerty.htm
+    container-selector: 'div#content > div.event:not(:last-child):not(:nth-last-child(2))'
+    artist-selector: a
+    artist-attribute-name: href
+    date-selector:
+      - div:last-of-type > a > h3 > span
+
+
+

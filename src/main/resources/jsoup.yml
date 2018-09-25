@@ -1,0 +1,52 @@
+jsoup:
+  mapping-properties-list:
+   -
+     name: Ucho
+     url:
+      - http://ucho.com.pl/program
+     artist-selector: span
+     container-selector: header > h2.entry-title
+     date-selector:
+      - time.published[datetime]
+     date-pattern: yyyy-MM-dd'T'HH:mm:ssXXX
+   -
+     name: B90
+     url:
+      - http://www.b90.pl/koncerty/
+     artist-selector: strong > a
+     container-selector: 'div#srodek > p:not(:last-child):not(:nth-last-child(2))'
+     date-selector:
+      - p
+     date-pattern:
+   -
+     name: Blues Club
+     url:
+      - https://www.bluesclub.pl/pl/koncerty.html
+     artist-selector: p.header
+     date-selector:
+      - p.subheader
+     container-selector: div.header_wrapper
+     date-pattern: yyyy-MM-dd' 'HH:mm
+   -
+     name: Stary Maneż
+     url:
+      - https://starymanez.pl/kalendarz
+     artist-selector: h4.box-news__title > a
+     container-selector: div.box-news__content
+     date-selector:
+      - 'span.box-news__date'
+     date-pattern: dd.MM.yyyy
+   -
+     name: Protokultura
+     url:
+      - http://www.protokultura.pl/Nadchodzace-imprezy?page=1
+      - http://www.protokultura.pl/Nadchodzace-imprezy?page=2
+     artist-selector: div.event-text
+     container-selector: div.eventbox
+     date-selector:
+       - div.event-date #dzień miesiąca
+       - div.event-date > span #miesiąc literal
+       - div.event-date3 #rok
+       - div.event-date2 #godzina
+     date-pattern:
+
