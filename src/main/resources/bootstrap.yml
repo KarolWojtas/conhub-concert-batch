@@ -77,6 +77,23 @@ jsoup:
     artist-attribute-name: href
     date-selector:
       - div:last-of-type > a > h3 > span
+  -
+    name: Palladium
+    url:
+    - https://palladium.pl/events/
+    container-selector: div#events-list > a
+    artist-selector: h3
+    date-selector: span.date.nobr > time
+    date-pattern: yyyy-MM-dd' 'HH:mm:ss
+  -
+    name: Wytwórnia
+    url:
+     - http://www.wytwornia.pl/
+    container-selector: ul.events-list > li
+    artist-selector: span.bold.name
+    date-selector: a.desc > span > time
+    date-pattern: yyyy-MM-dd'T'HH:mm
+
 
 
 

@@ -37,10 +37,11 @@ class Bootstrap : CommandLineRunner{
     lateinit var propsContainer: JsoupMappingPropertiesContainer
 
     override fun run(vararg args: String?) {
+        val venues = listOf(Venue(name = "Blues Club"), Venue(name = "Stary Maneż"), Venue(name = "Ucho"), Venue(name = "Protokultura"),
+                Venue(name = "Stodoła"), Venue(name = "Palladium"), Venue(name = "Wytwórnia"))
         venueRepository.deleteAll()
         concertRepository.deleteAll()
-        val venues = listOf(Venue(name = "Blues Club"), Venue(name = "Stary Maneż"), Venue(name = "Ucho"), Venue(name = "Protokultura"),
-                Venue(name = "Stodoła"))
+
         val savedVenues: List<Venue> = venueRepository.saveAll(venues)
         val bcConcerts = jsoupService.init("Blues Club", savedVenues).mapToConcerts()
         val uchoConcerts = jsoupService.init(venueName = "Ucho", venues = savedVenues).mapToConcerts(attributeName = "datetime")
@@ -48,8 +49,12 @@ class Bootstrap : CommandLineRunner{
         val protoConcerts = jsoupService.init("Protokultura", savedVenues).mapToConcerts(dateFormatter = ProtokulturaFormatter.Companion::format)
         val stodConcerts = jsoupService.init("Stodoła", savedVenues).mapToConcerts(dateFormatter = StodolaFormatter.Companion::format,
                 artistFormatter = StodolaStringFormatter.Companion::format)
-        concertRepository.saveAll(bcConcerts+uchoConcerts+smConcerts+protoConcerts+stodConcerts)
+        val palladiumConcerts = jsoupService.init("Palladium", venues).mapToConcerts(attributeName = "datetime")
+        val wytworniaConcerts = jsoupService.init("Wytwórnia", venues).mapToConcerts(attributeName = "datetime")
+        jsoupService.init("Tama", venues).mapToConcerts().forEach { println(it) }
+        concertRepository.saveAll(bcConcerts+uchoConcerts+smConcerts+protoConcerts+stodConcerts+palladiumConcerts+wytworniaConcerts)
         println(concertRepository.count())
+
 
 
     }

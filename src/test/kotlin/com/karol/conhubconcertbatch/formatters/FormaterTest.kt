@@ -35,7 +35,7 @@ class FormatterTest{
     }
     @Test
     fun `protokultura formatter test`(reporter: TestReporter){
-        val example = "16,LIS,2018,19:00"
+        val example = "16 LIS 2018,19:00"
         reporter.publishEntry("format",ProtokulturaFormatter.Companion.format(example).toString() )
     }
     @Test
