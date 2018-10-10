@@ -9,6 +9,9 @@ spring:
   data:
     mongodb:
       database: concert
+  batch:
+    job:
+      enabled: false
 eureka:
   client:
     enabled: true
@@ -19,6 +22,10 @@ eureka:
       defaultZone: http://${EUREKA_SERVER_HOST:localhost}:8761/eureka
   instance:
     leaseRenewalIntervalInSeconds: 10
+batch:
+ concert-job-name: concertJob
+ startHour: 0
+
 jsoup:
   mapping-properties-list:
   -
@@ -30,15 +37,6 @@ jsoup:
     date-selector:
     - time.published[datetime]
     date-pattern: yyyy-MM-dd'T'HH:mm:ssXXX
-  -
-    name: B90
-    url:
-    - http://www.b90.pl/koncerty/
-    artist-selector: strong > a
-    container-selector: 'div#srodek > p:not(:last-child):not(:nth-last-child(2))'
-    date-selector:
-    - p
-    date-pattern:
   -
     name: Blues Club
     url:
@@ -85,7 +83,14 @@ jsoup:
     artist-selector: h3
     date-selector: span.date.nobr > time
     date-pattern: yyyy-MM-dd' 'HH:mm:ss
-
+  -
+    name: Progresja
+    url:
+     - https://progresja.com/events/
+    container-selector: div.events-list > a.events-item
+    artist-selector: div.title-place > h2
+    date-selector: span.date > time
+    date-pattern: yyyy-MM-dd' 'HH:mm:ss
 
 
 

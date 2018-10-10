@@ -1,58 +1,34 @@
 package com.karol.conhubconcertbatch
 
-import com.karol.conhubconcertbatch.domain.*
-import com.karol.conhubconcertbatch.mappers.ProtokulturaFormatter
-import com.karol.conhubconcertbatch.mappers.SMFormatter
-import com.karol.conhubconcertbatch.mappers.StodolaFormatter
-import com.karol.conhubconcertbatch.mappers.StodolaStringFormatter
-import com.karol.conhubconcertbatch.service.JsoupService
+import com.karol.conhubconcertbatch.config.quartzBeans
+import org.quartz.JobDetail
+import org.quartz.Trigger
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.CommandLineRunner
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.PropertySource
-import org.springframework.context.annotation.PropertySources
-
+import org.springframework.context.annotation.Bean
+import org.springframework.scheduling.quartz.SchedulerFactoryBean
+import java.util.*
 
 @SpringBootApplication
 @EnableBatchProcessing
 class ConhubConcertBatchApplication
-
+@Value("\${batch.concertJobName}")
+val concertJobName: String? = null
+@Value("\${batch.startHour}")
+val startHour: Int? = null
 fun main(args: Array<String>) {
     SpringApplication(ConhubConcertBatchApplication::class.java).apply {
-        addInitializers(beans())
+        addInitializers(beans(concertJobName), quartzBeans(concertJobName?:"concertJob", startHour?:0))
         run(*args)
     }
-}
-class Bootstrap : CommandLineRunner{
-    @Autowired
-    lateinit var jsoupService: JsoupService
-    @Autowired
-    lateinit var venueRepository: VenueRepository
-    @Autowired
-    lateinit var concertRepository: ConcertRepository
-    @Autowired
-    lateinit var propsContainer: JsoupMappingPropertiesContainer
-
-    override fun run(vararg args: String?) {
-        venueRepository.deleteAll()
-        concertRepository.deleteAll()
-        val venues = listOf(Venue(name = "Blues Club"), Venue(name = "Stary Maneż"), Venue(name = "Ucho"), Venue(name = "Protokultura"),
-                Venue(name = "Stodoła"), Venue(name = "Palladium"))
-        val savedVenues: List<Venue> = venueRepository.saveAll(venues)
-        val bcConcerts = jsoupService.init("Blues Club", savedVenues).mapToConcerts()
-        val uchoConcerts = jsoupService.init(venueName = "Ucho", venues = savedVenues).mapToConcerts(attributeName = "datetime")
-        val smConcerts = jsoupService.init("Stary Maneż", savedVenues).mapToConcerts(SMFormatter.Companion::format)
-        val protoConcerts = jsoupService.init("Protokultura", savedVenues).mapToConcerts(dateFormatter = ProtokulturaFormatter.Companion::format)
-        val stodConcerts = jsoupService.init("Stodoła", savedVenues).mapToConcerts(dateFormatter = StodolaFormatter.Companion::format,
-                artistFormatter = StodolaStringFormatter.Companion::format)
-        val palladiumConcerts = jsoupService.init("Palladium", savedVenues).mapToConcerts(attributeName = "datetime")
-        concertRepository.saveAll(bcConcerts+uchoConcerts+smConcerts+protoConcerts+stodConcerts+palladiumConcerts)
-        println(concertRepository.count())
-
-
-
+    @Bean
+    fun schedulerFactoryBean(concertQuartzJobTrigger: Trigger, quartzProperties: Properties, concertQuartzJobDetail: JobDetail) = SchedulerFactoryBean().apply {
+        setTriggers(concertQuartzJobTrigger)
+        setJobDetails(concertQuartzJobDetail)
+        setQuartzProperties(quartzProperties)
     }
 }
+
+

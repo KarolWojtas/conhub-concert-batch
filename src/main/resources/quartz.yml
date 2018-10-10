@@ -1,0 +1,4 @@
+org:
+  quartz:
+   threadPool:
+    threadCount: 3
