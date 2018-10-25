@@ -45,6 +45,7 @@ fun quartzBeans(concertJobName: String, startHour: Int) = beans {
     bean<Trigger>("concertQuartzJobTrigger"){
         TriggerBuilder.newTrigger().withIdentity("concertQuartzJobTrigger")
                 .forJob(ref<JobDetail>("concertQuartzJobDetail"))
+                .withSchedule(cronSchedule("0 0 0/12 * * *"))
                 .withSchedule(dailyAtHourAndMinute(startHour,0))
                 .build()
     }

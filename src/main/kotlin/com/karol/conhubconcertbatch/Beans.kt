@@ -22,6 +22,7 @@ import org.springframework.batch.item.ItemWriter
 import org.springframework.context.support.beans
 import org.springframework.core.task.SimpleAsyncTaskExecutor
 import java.net.ConnectException
+import java.net.UnknownHostException
 
 fun beans(concertJobName: String?) = beans{
     bean<ConcertService>(isPrimary = true){ConcertServiceImpl()}
@@ -58,6 +59,7 @@ fun concertStep(itemWriter: ItemWriter<Concert>, steps: StepBuilderFactory, item
         .reader(itemReader)
         .writer(itemWriter)
         .faultTolerant()
+        .skip(UnknownHostException::class.java)
         .skip(com.mongodb.MongoWriteException::class.java)
         .skip(org.springframework.dao.DuplicateKeyException::class.java)
         .noSkip(ConnectException::class.java)
