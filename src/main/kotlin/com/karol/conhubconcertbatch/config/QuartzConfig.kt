@@ -2,6 +2,7 @@ package com.karol.conhubconcertbatch.config
 
 import org.quartz.*
 import org.quartz.CronScheduleBuilder.*
+import org.quartz.SimpleScheduleBuilder.*
 import org.springframework.batch.core.JobParametersBuilder
 import org.springframework.batch.core.configuration.JobLocator
 import org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor
@@ -45,8 +46,8 @@ fun quartzBeans(concertJobName: String, startHour: Int) = beans {
     bean<Trigger>("concertQuartzJobTrigger"){
         TriggerBuilder.newTrigger().withIdentity("concertQuartzJobTrigger")
                 .forJob(ref<JobDetail>("concertQuartzJobDetail"))
-                .withSchedule(cronSchedule("0 0 0/12 * * ?"))
-                .withSchedule(dailyAtHourAndMinute(startHour,0))
+               // .withSchedule(cronSchedule("0 0 0/12 * * ?"))
+                .withSchedule(repeatHourlyForever(3))
                 .build()
     }
     bean("quartzProperties"){

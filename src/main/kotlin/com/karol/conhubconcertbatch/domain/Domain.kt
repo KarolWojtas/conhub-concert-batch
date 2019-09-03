@@ -1,6 +1,7 @@
 package com.karol.conhubconcertbatch.domain
 
 import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.Transient
 import org.springframework.data.mongodb.core.index.CompoundIndex
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
@@ -16,7 +17,9 @@ data class Concert(
 )
 @Document
 data class Venue(@Id val id: String? = null,
-                 val name: String, val avatar: ByteArray? = null)
+                 val name: String,
+                 @Transient
+                 val avatar: ByteArray? = null)
 
 class MappingPropertiesKt {
     var name: String? = null
